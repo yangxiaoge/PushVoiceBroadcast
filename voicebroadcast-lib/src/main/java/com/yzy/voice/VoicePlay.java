@@ -164,4 +164,61 @@ public class VoicePlay {
             }
         }
     }
+
+    /**
+     * 播放指定语音文件
+     * @param resourceId 语音文件id
+     */
+    public void playVoice(int resourceId) {
+        mExecutorService.execute(() -> start(resourceId));
+    }
+
+    /**
+     * 开始播报指定资源语音文件
+     *
+     * @param resourceId
+     */
+    private void start(final int resourceId) {
+        synchronized (VoicePlay.this) {
+
+            MediaPlayer mMediaPlayer = new MediaPlayer();
+            final CountDownLatch mCountDownLatch = new CountDownLatch(1);
+            AssetFileDescriptor assetFileDescription = null;
+
+            try {
+                assetFileDescription = FileUtils.getAssetFileDescription(mContext,
+                        resourceId);
+                mMediaPlayer.setDataSource(
+                        assetFileDescription.getFileDescriptor(),
+                        assetFileDescription.getStartOffset(),
+                        assetFileDescription.getLength());
+                mMediaPlayer.prepareAsync();
+                mMediaPlayer.setOnPreparedListener(mediaPlayer -> mMediaPlayer.start());
+                mMediaPlayer.setOnCompletionListener(mediaPlayer -> {
+                    mediaPlayer.reset();
+                    mediaPlayer.release();
+                    mCountDownLatch.countDown();
+                });
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                mCountDownLatch.countDown();
+            } finally {
+                if (assetFileDescription != null) {
+                    try {
+                        assetFileDescription.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            try {
+                mCountDownLatch.await();
+                notifyAll();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

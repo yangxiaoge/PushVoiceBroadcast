@@ -28,4 +28,16 @@ public class FileUtils {
         AssetManager manager = context.getApplicationContext().getAssets();
         return manager.openFd(filename);
     }
+
+    /**
+     * Assets获取资源
+     *
+     * @param context
+     * @param soundResId 语音资源文件id
+     * @return
+     */
+    public static AssetFileDescriptor getAssetFileDescription(Context context, int soundResId) {
+        return context.getApplicationContext().getResources().openRawResourceFd(soundResId);
+    }
+
 }

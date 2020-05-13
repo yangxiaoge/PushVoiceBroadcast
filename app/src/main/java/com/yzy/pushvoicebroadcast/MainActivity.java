@@ -50,6 +50,16 @@ public class MainActivity extends AppCompatActivity {
             }
 
             VoicePlay.with(MainActivity.this).play(amount, mCheckNum);
+            // TODO: 2020/5/13 以下是播放指定语言文件，皆按照顺序播放。
+            VoicePlay.with(MainActivity.this).playVoice(R.raw.one);
+            VoicePlay.with(MainActivity.this).playVoice(R.raw.two);
+            VoicePlay.with(MainActivity.this).playVoice(R.raw.three);
+            VoicePlay.with(MainActivity.this).playVoice(R.raw.four);
+            VoicePlay.with(MainActivity.this).playVoice(R.raw.five);
+            VoicePlay.with(MainActivity.this).playVoice(R.raw.six);
+            VoicePlay.with(MainActivity.this).playVoice(R.raw.seven);
+            VoicePlay.with(MainActivity.this).playVoice(R.raw.eight);
+            VoicePlay.with(MainActivity.this).playVoice(R.raw.nine);
 
             llMoneyList.addView(getTextView(amount), 0);
             editText.setText("");
